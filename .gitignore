@@ -1,0 +1,92 @@
+# ===========================
+# Python
+# ===========================
+
+.venv/
+venv/
+env/
+ENV/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# ===========================
+# TensorFlow / Models
+# ===========================
+
+*.h5.bak
+*.ckpt
+*.pb
+
+# (Keep your actual model)
+# !backend/models/emotion_model.h5
+
+# ===========================
+# Reports
+# ===========================
+
+backend/reports/*
+!backend/reports/.gitkeep
+
+# ===========================
+# Database
+# ===========================
+
+backend/database/*.db
+backend/database/*.sqlite3
+
+# ===========================
+# Logs
+# ===========================
+
+*.log
+
+# ===========================
+# VS Code
+# ===========================
+
+.vscode/
+.idea/
+
+# ===========================
+# Node
+# ===========================
+
+frontend/node_modules/
+frontend/dist/
+
+# ===========================
+# OS Files
+# ===========================
+
+.DS_Store
+Thumbs.db
+
+# ===========================
+# Environment Variables
+# ===========================
+
+.env
+.env.*
+
+# ===========================
+# Python Build
+# ===========================
+
+build/
+dist/
+*.egg-info/
+
+# ===========================
+# Cache
+# ===========================
+
+.pytest_cache/
+.mypy_cache/
