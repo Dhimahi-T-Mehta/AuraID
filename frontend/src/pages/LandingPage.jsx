@@ -2,32 +2,24 @@ import { useState } from "react";
 
 import Hero from "../components/Hero";
 import Loader from "../components/Loader";
-import VideoOverlay from "../components/VideoOverlay";
 
-function LandingPage() {
-  const [open, setOpen] = useState(false);
+function LandingPage({ onStartSession }) {
   const [loading, setLoading] = useState(false);
 
-  const startCamera = () => {
+  const startSession = () => {
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      setOpen(true);
+      onStartSession();
     }, 2000);
   };
 
   return (
     <div className="app">
-      <Hero onStart={startCamera} />
+      <Hero onStart={startSession} />
 
       {loading && <Loader />}
-
-      {open && (
-        <VideoOverlay
-          onClose={() => setOpen(false)}
-        />
-      )}
     </div>
   );
 }
