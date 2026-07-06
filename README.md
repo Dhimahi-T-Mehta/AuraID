@@ -30,6 +30,28 @@ This project is currently being transformed from a simple FER demo into a comple
 
 ---
 
+## 🚀 Latest Update
+
+AuraID now includes a real-time analytics pipeline.
+
+### Backend
+- Refactored detection logic into a dedicated Emotion Detection Service.
+- Added REST API endpoint:
+  - `/video`
+  - `/analytics`
+- Live JSON analytics for emotion, confidence, face count and FPS (FPS placeholder).
+
+### Frontend
+- Premium dashboard UI
+- Embedded live camera panel
+- Live analytics cards
+- Automatic polling from backend every 250ms
+- Responsive dashboard layout
+
+The frontend and backend are now fully synchronized through REST APIs.
+
+---
+
 ## Current Features
 
 - Real-time webcam emotion detection
@@ -152,79 +174,28 @@ React Frontend
 
 ---
 
-## Project Status
+## Project Status & Progress
 
-### Completed
+### ✅ Completed
 
-- React frontend
-- Flask backend
-- MediaPipe integration
-- CNN emotion prediction
-- Live webcam streaming
-- Confidence score
-- Premium landing page
-- Responsive UI
-- Component-based React architecture
-- Initial backend refactoring
+- Project Refactoring
+- Premium Landing Page
+- Dashboard UI
+- Camera Integration
+- Live Analytics API
+- Real-time Emotion Cards
+- Glassmorphism Dashboard
 
----
+### 🚧 Next
 
-## Upcoming Roadmap
-
-### Phase 1 — Dashboard UI
-
-- Live Dashboard
-- Emotion Cards
-- Confidence Card
-- FPS Counter
-- Face Counter
 - Session Timer
-
----
-
-### Phase 2 — Analytics Engine
-
-- Emotion Timeline
-- Emotion Distribution
-- Confidence Tracking
-- Live Charts
-
----
-
-### Phase 3 — Report Generation
-
-- PDF Reports
-- CSV Export
-- Session Summary
-- Analytics Charts
-
----
-
-### Phase 4 — Database
-
-- SQLite Integration
-- Session History
-- Previous Reports
-- Analytics Storage
-
----
-
-### Phase 5 — AI Insights
-
-- Dominant Emotion
-- Emotion Stability Score
-- Session Summary
-- AI-generated Insights
-
----
-
-### Phase 6 — Production Upgrade
-
-- Browser Camera Architecture
-- REST APIs
-- Authentication
-- Deployment
-- Docker Support
+- FPS Counter
+- Emotion History
+- Emotion Distribution Chart
+- Timeline Graph
+- Report Generation
+- SQLite Database
+- AI Insights
 
 ---
 
