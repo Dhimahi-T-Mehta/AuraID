@@ -32,23 +32,21 @@ This project is currently being transformed from a simple FER demo into a comple
 
 ## 🚀 Latest Update
 
-AuraID now includes a real-time analytics pipeline.
+AuraID now records and visualizes live emotion history during each session.
 
 ### Backend
-- Refactored detection logic into a dedicated Emotion Detection Service.
-- Added REST API endpoint:
-  - `/video`
-  - `/analytics`
-- Live JSON analytics for emotion, confidence, face count and FPS (FPS placeholder).
+- Added emotion history tracking.
+- Smoothed predictions using a majority-voting queue.
+- Added `/history` API endpoint.
+- Session-based emotion timeline generation.
 
 ### Frontend
-- Premium dashboard UI
-- Embedded live camera panel
-- Live analytics cards
-- Automatic polling from backend every 250ms
-- Responsive dashboard layout
+- Added Emotion Distribution panel.
+- Added Emotion Timeline panel.
+- Introduced reusable custom hooks (`useAnalytics`, `useEmotionHistory`, `useSessionTimer`).
+- Modular analytics dashboard architecture.
 
-The frontend and backend are now fully synchronized through REST APIs.
+This phase establishes the foundation for real-time charts, PDF reports, AI insights and database storage.
 
 ---
 
@@ -174,28 +172,34 @@ React Frontend
 
 ---
 
-## Project Status & Progress
+## 📌 Project Status & Development Progress
 
 ### ✅ Completed
 
-- Project Refactoring
 - Premium Landing Page
 - Dashboard UI
-- Camera Integration
-- Live Analytics API
-- Real-time Emotion Cards
-- Glassmorphism Dashboard
-
-### 🚧 Next
-
+- Live Camera Feed
+- Real-time Emotion Detection
+- Live Analytics Cards
 - Session Timer
-- FPS Counter
 - Emotion History
-- Emotion Distribution Chart
-- Timeline Graph
-- Report Generation
+- Emotion Distribution
+- Emotion Timeline
+- Glassmorphism Dashboard
+- Backend Refactoring
+- Frontend Refactoring
+
+### 🚧 Coming Next
+
+- Emotion Pie Chart (Recharts)
+- Emotion Timeline Chart
+- Dynamic Dashboard Theme
+- Camera Statistics
+- Session Management
+- PDF Report Generation
 - SQLite Database
 - AI Insights
+- Browser-based Production Architecture
 
 ---
 

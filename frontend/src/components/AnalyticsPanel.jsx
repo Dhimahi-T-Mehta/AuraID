@@ -1,22 +1,22 @@
+import EmotionDistribution from "./EmotionDistribution";
+import EmotionTimeline from "./EmotionTimeline";
+
 function AnalyticsPanel() {
   return (
     <section className="analytics-panel">
 
       <h2>Emotion Analytics</h2>
 
-      <div className="placeholder-card">
-        📊 Emotion Distribution
-        <p>Pie chart will appear here</p>
-      </div>
+      <EmotionDistribution />
 
-      <div className="placeholder-card">
-        📈 Emotion Timeline
-        <p>Live trend visualization</p>
-      </div>
+      <EmotionTimeline />
 
-      <div className="placeholder-card">
-        🤖 AI Insights
-        <p>Coming in Phase 5</p>
+      <div className="analytics-card">
+        <h3>🤖 AI Insights</h3>
+
+        <p>
+          AI-generated session insights will be available in Phase 5.
+        </p>
       </div>
 
     </section>

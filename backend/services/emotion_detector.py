@@ -3,7 +3,8 @@ import cv2
 import mediapipe as mp
 import numpy as np
 from tensorflow.keras.models import load_model
-from collections import deque
+from collections import deque, Counter
+import time
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
@@ -52,6 +53,12 @@ latest_prediction = {
     "fps": 0
 }
 
+emotion_history = []
+
+session_start = time.time()
+
+last_saved_second = -1
+
 cap = cv2.VideoCapture(0)
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -61,9 +68,17 @@ emotion_queue = deque(maxlen=7)
 
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
-
 def get_latest_prediction():
     return latest_prediction
+
+def get_emotion_history():
+    return emotion_history
+
+def get_smoothed_emotion():
+    if not emotion_queue:
+        return "--"
+
+    return Counter(emotion_queue).most_common(1)[0][0]
 
 def generate_frames():
     while True:
@@ -102,15 +117,36 @@ def generate_frames():
                 prediction = model.predict(roi, verbose=0)
                 confidence = np.max(prediction)
                 emotion_index = np.argmax(prediction)
+
+                current_emotion = emotion_labels[emotion_index]
+
+                emotion_queue.append(current_emotion)
+
+                smoothed_emotion = get_smoothed_emotion()
                 
-                latest_prediction["emotion"] = emotion_labels[emotion_index]
+                latest_prediction["emotion"] = smoothed_emotion
                 latest_prediction["confidence"] = int(confidence * 100)
                 latest_prediction["faces"] = len(results.detections)
+
+                global last_saved_second
+
+                elapsed = int(time.time() - session_start)
+
+                if elapsed != last_saved_second:
+
+                    last_saved_second = elapsed
+
+                    timestamp = f"{elapsed//60:02}:{elapsed%60:02}"
+
+                    emotion_history.append({
+                        "time": timestamp,
+                        "emotion": smoothed_emotion
+                    })
 
                 if confidence < 0.50:
                     label = "Analyzing..."
                 else:
-                    label = f"{emotion_labels[emotion_index]} ({int(confidence*100)}%)"
+                    label = f"{smoothed_emotion} ({int(confidence*100)}%)"
 
                 cv2.rectangle(frame, (x, y), (x+bw, y+bh), (0, 255, 0), 2)
                 cv2.putText(
