@@ -5,7 +5,12 @@ import AnalyticsPanel from "../components/AnalyticsPanel";
 import ActionBar from "../components/ActionBar";
 import "../styles/dashboard.css";
 
+import { useEmotionHistory } from "../hooks/useEmotionHistory";
+
 function DashboardPage({ onEndSession }) {
+
+  const history = useEmotionHistory();
+
   return (
     <div className="dashboard-page">
 
@@ -17,7 +22,7 @@ function DashboardPage({ onEndSession }) {
 
         <CameraPanel />
 
-        <AnalyticsPanel />
+        <AnalyticsPanel history={history} />
 
       </div>
 

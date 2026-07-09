@@ -1,15 +1,15 @@
 import EmotionDistribution from "./EmotionDistribution";
 import EmotionTimeline from "./EmotionTimeline";
 
-function AnalyticsPanel() {
+function AnalyticsPanel({ history }) {
   return (
     <section className="analytics-panel">
 
       <h2>Emotion Analytics</h2>
 
-      <EmotionDistribution />
+      <EmotionDistribution history={history} />
 
-      <EmotionTimeline />
+      <EmotionTimeline history={history} />
 
       <div className="analytics-card">
         <h3>🤖 AI Insights</h3>

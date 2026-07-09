@@ -1,9 +1,41 @@
-import { useEmotionHistory } from "../hooks/useEmotionHistory";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
+
 import "../index.css";
 
-function EmotionTimeline() {
+function EmotionTimeline({ history }) {
 
-  const history = useEmotionHistory();
+  const emotionMap = {
+    Angry: 1,
+    Disgust: 2,
+    Fear: 3,
+    Sad: 4,
+    Neutral: 5,
+    Happy: 6,
+    Surprise: 7,
+  };
+
+  const reverseEmotionMap = {
+  1: "Angry",
+  2: "Disgust",
+  3: "Fear",
+  4: "Sad",
+  5: "Neutral",
+  6: "Happy",
+  7: "Surprise",
+};
+
+  const chartData = history.slice(-20).map((item) => ({
+  time: item.time,
+  emotion: emotionMap[item.emotion] || 0,
+}));
 
   return (
 
@@ -11,34 +43,45 @@ function EmotionTimeline() {
 
       <h3>📈 Emotion Timeline</h3>
 
-      <div className="timeline-list">
+      {chartData.length === 0 ? (
 
-        {history.length === 0 ? (
+  <p className="empty-state">
+    Waiting for emotion history...
+  </p>
 
-          <p className="empty-state">
-            Waiting for emotion history...
-          </p>
+) : (
 
-        ) : (
+  <ResponsiveContainer width="100%" height={220}>
 
-          history.slice(-10).reverse().map((item, index) => (
+    <LineChart data={chartData}>
 
-            <div
-              key={index}
-              className="timeline-item"
-            >
+      <CartesianGrid strokeDasharray="3 3" />
 
-              <span>{item.time}</span>
+      <XAxis dataKey="time" />
 
-              <strong>{item.emotion}</strong>
+      <YAxis
+        ticks={[1,2,3,4,5,6,7]}
+        domain={[1,7]}
+        tickFormatter={(value) => reverseEmotionMap[value]}
+      />
 
-            </div>
+      <Tooltip
+        formatter={(value) => reverseEmotionMap[value]}
+      />
 
-          ))
+      <Line
+        type="monotone"
+        dataKey="emotion"
+        stroke="#00e5ff"
+        strokeWidth={3}
+        dot={false}
+      />
 
-        )}
+    </LineChart>
 
-      </div>
+  </ResponsiveContainer>
+
+)}
 
     </div>
 

@@ -5,6 +5,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from collections import deque, Counter
 import time
+from collections import deque
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
@@ -50,10 +51,13 @@ latest_prediction = {
     "emotion": "--",
     "confidence": 0,
     "faces": 0,
-    "fps": 0
+    "fps": 0,
+    "width": 1280,
+    "height": 720,
+    "model": "FER CNN"
 }
 
-emotion_history = []
+emotion_history = deque(maxlen=300)
 
 session_start = time.time()
 
@@ -66,7 +70,6 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 emotion_queue = deque(maxlen=7)
 
-emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 def get_latest_prediction():
     return latest_prediction
@@ -80,7 +83,11 @@ def get_smoothed_emotion():
 
     return Counter(emotion_queue).most_common(1)[0][0]
 
+global prev_time
+prev_time = time.time()
+
 def generate_frames():
+
     while True:
         success, frame = cap.read()
         if not success:
@@ -144,8 +151,12 @@ def generate_frames():
                     })
 
                 if confidence < 0.50:
+                    latest_prediction["emotion"] = "Analyzing..."
+                    latest_prediction["confidence"] = 0
                     label = "Analyzing..."
                 else:
+                    latest_prediction["emotion"] = smoothed_emotion
+                    latest_prediction["confidence"] = int(confidence * 100)
                     label = f"{smoothed_emotion} ({int(confidence*100)}%)"
 
                 cv2.rectangle(frame, (x, y), (x+bw, y+bh), (0, 255, 0), 2)
@@ -167,3 +178,37 @@ def generate_frames():
             b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
         )
+
+        current_time = time.time()
+
+        delta = current_time - prev_time
+
+        if delta > 0:
+            latest_prediction["fps"] = int(1 / delta)
+
+        prev_time = current_time
+
+    else:
+        latest_prediction["faces"] = 0
+
+def reset_session():
+    global session_start
+    global last_saved_second
+
+    emotion_history.clear()
+    emotion_queue.clear()
+
+    session_start = time.time()
+    last_saved_second = -1
+
+    latest_prediction.update({
+        "emotion": "--",
+        "confidence": 0,
+        "faces": 0,
+        "fps": 0,
+        "width": 1280,
+        "height": 720,
+        "model": "FER CNN"
+    })
+
+    return {"status": "success"}

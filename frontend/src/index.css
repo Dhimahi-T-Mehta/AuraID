@@ -182,3 +182,15 @@ body {
     font-style:italic;
 
 }
+
+.recharts-wrapper {
+  margin-top: 10px;
+}
+
+.recharts-legend-item-text {
+  color: white !important;
+}
+
+.recharts-tooltip-wrapper {
+  font-size: 14px;
+}

@@ -1,10 +1,11 @@
-from flask import Flask, Response, jsonify
+from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 
 from services.emotion_detector import (
     generate_frames,
     get_latest_prediction,
-    get_emotion_history
+    get_emotion_history,
+    reset_session,
 )
 
 app = Flask(__name__)
@@ -29,3 +30,7 @@ def history():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/reset-session", methods=["POST"])
+def reset():
+    return jsonify(reset_session())

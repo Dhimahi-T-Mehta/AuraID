@@ -164,3 +164,32 @@ flex-direction:column;
 }
 
 }
+
+.camera-status-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.06);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  font-size: .9rem;
+
+  color: #e5e7eb;
+}
+
+.status-item strong {
+  color: #ffffff;
+}
