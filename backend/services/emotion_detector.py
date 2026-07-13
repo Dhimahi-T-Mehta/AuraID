@@ -77,6 +77,33 @@ def get_latest_prediction():
 def get_emotion_history():
     return emotion_history
 
+def reset_session():
+    global session_start
+    global last_saved_second
+    global prev_time
+
+    emotion_history.clear()
+    emotion_queue.clear()
+
+    session_start = time.time()
+    last_saved_second = -1
+    prev_time = time.time()
+
+    latest_prediction.update({
+        "emotion": "--",
+        "confidence": 0,
+        "faces": 0,
+        "fps": 0,
+        "width": 1280,
+        "height": 720,
+        "model": "FER CNN"
+    })
+
+    return {
+        "status": "success",
+        "message": "Session reset successfully"
+        }
+
 def get_smoothed_emotion():
     if not emotion_queue:
         return "--"
@@ -190,25 +217,3 @@ def generate_frames():
 
     else:
         latest_prediction["faces"] = 0
-
-def reset_session():
-    global session_start
-    global last_saved_second
-
-    emotion_history.clear()
-    emotion_queue.clear()
-
-    session_start = time.time()
-    last_saved_second = -1
-
-    latest_prediction.update({
-        "emotion": "--",
-        "confidence": 0,
-        "faces": 0,
-        "fps": 0,
-        "width": 1280,
-        "height": 720,
-        "model": "FER CNN"
-    })
-
-    return {"status": "success"}

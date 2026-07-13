@@ -1,4 +1,12 @@
+import { resetSession } from "../services/sessionService";
 function ActionBar({ onEndSession }) {
+  const handleEndSession = async () => {
+
+    await resetSession();
+
+    onEndSession();
+
+};
   return (
     <div className="action-bar">
 
@@ -11,8 +19,8 @@ function ActionBar({ onEndSession }) {
       </button>
 
       <button
-        className="primary-btn"
-        onClick={onEndSession}
+        className="danger-btn"
+        onClick={handleEndSession}
       >
         ⏹ End Session
       </button>
