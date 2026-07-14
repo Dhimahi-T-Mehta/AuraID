@@ -124,6 +124,9 @@ def generate_frames():
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         results = face_detection.process(rgb)
+        latest_prediction["faces"] = 0
+        latest_prediction["emotion"] = "--"
+        latest_prediction["confidence"] = 0
 
         if results.detections:
             for detection in results.detections:

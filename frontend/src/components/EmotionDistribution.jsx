@@ -66,7 +66,8 @@ function EmotionDistribution({ history }) {
                 outerRadius={85}
                 innerRadius={45}
                 paddingAngle={3}
-                animationDuration={700}
+                animationDuration={500}
+                animationEasing="ease-out"
               >
 
                 {distribution.map((entry) => (
