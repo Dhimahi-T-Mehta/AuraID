@@ -13,7 +13,7 @@ export function useAnalytics() {
     const interval = setInterval(async () => {
         const data = await fetchAnalytics();
         setAnalytics(data);
-    }, 250); 
+    }, 500); 
 
     return () => clearInterval(interval);
   }, []);

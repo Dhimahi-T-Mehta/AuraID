@@ -1,29 +1,53 @@
 import { resetSession } from "../services/sessionService";
+import { useState } from "react";
 function ActionBar({ onEndSession }) {
-  const handleEndSession = async () => {
 
-    await resetSession();
+const [loading,setLoading]=useState(false);
 
-    onEndSession();
+const handleEndSession = async ()=>{
+
+setLoading(true);
+
+await resetSession();
+
+onEndSession();
+
+setTimeout(()=>{
+
+setLoading(false);
+
+},1000);
 
 };
+
   return (
     <div className="action-bar">
 
-      <button className="secondary-btn">
-        ⬇ Download Report
-      </button>
+      <button
+        disabled={loading}
+        >
 
-      <button className="secondary-btn">
-        💾 Save Session
-      </button>
+        ⬇ Download Report
+
+        </button>
 
       <button
+        disabled={loading}
+        >
+
+          💾 Save Session
+
+        </button>
+
+      <button
+        disabled={loading}
         className="danger-btn"
         onClick={handleEndSession}
-      >
+        >
+
         ⏹ End Session
-      </button>
+
+        </button>
 
     </div>
   );

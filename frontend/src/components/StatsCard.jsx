@@ -1,9 +1,36 @@
+import CountUp from "react-countup";
+
+const subtitles = {
+    "Current Emotion": "Emotion Detection",
+    Confidence: "AI Confidence",
+    Faces: "Face Tracking",
+    FPS: "Frames / Second",
+    Session: "Current Session",
+};
+
+const footers = {
+
+CurrentEmotion:"Real-time",
+
+Confidence:"Prediction",
+
+Faces:"Detection",
+
+FPS:"Performance",
+
+Session:"Timer"
+
+};
+
 function StatsCard({
   title,
   value,
   icon,
   accentColor,
 }) {
+
+const numeric = !isNaN(value);
+
   return (
     <div
   className="stats-card"
@@ -29,17 +56,28 @@ function StatsCard({
       >
         {title}
       </h3>
-
+      <p className="card-subtitle">
+          {subtitles[title]}
+      </p>
       <h2
         style={{
           color: accentColor || "white",
         }}
       >
-        {value}
+        {numeric ? (
+            <CountUp
+                end={Number(value)}
+                duration={0.5}
+            />
+          ) : (
+              value
+          )}
       </h2>
 
       <div className="stats-footer">
-        Live Monitoring
+
+        {footers[title]}
+
       </div>
 
     </div>

@@ -83,10 +83,19 @@ function EmotionTimeline({ history }) {
 
 )}
 
-    </div>
+<h2 className="analytics-list-title">Recent Detections</h2>
 
-  );
+<ul className="analytics-list">
 
-}
+  {history.slice(-5).reverse().map((item, index) => (
 
+    <li key={index} className="analytics-list-item">
+      <span className="analytics-list-emotion">{item.emotion}</span>
+      <span className="analytics-list-time">{item.time}</span>
+    </li>
+  ))}
+</ul>
+
+</div>
+)}
 export default EmotionTimeline;

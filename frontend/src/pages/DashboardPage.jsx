@@ -6,10 +6,13 @@ import ActionBar from "../components/ActionBar";
 import "../styles/dashboard.css";
 
 import { useEmotionHistory } from "../hooks/useEmotionHistory";
+import { useState } from "react";
+import SessionSummaryModal from "../components/SessionSummaryModal";
 
 function DashboardPage({ onEndSession }) {
 
   const history = useEmotionHistory();
+  const [showSummary, setShowSummary] = useState(false);
 
   return (
     <div className="dashboard-page">
@@ -29,7 +32,6 @@ function DashboardPage({ onEndSession }) {
       <ActionBar
         onEndSession={onEndSession}
       />
-
     </div>
   );
 }
