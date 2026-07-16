@@ -6,3 +6,4 @@ mediapipe==0.10.9
 numpy==1.24.3
 keras
 Pillow
+reportlab

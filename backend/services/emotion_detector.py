@@ -5,7 +5,6 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from collections import deque, Counter
 import time
-from collections import deque
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
@@ -110,11 +109,8 @@ def get_smoothed_emotion():
 
     return Counter(emotion_queue).most_common(1)[0][0]
 
-global prev_time
-prev_time = time.time()
-
 def generate_frames():
-
+    prev_time = time.time()
     while True:
         success, frame = cap.read()
         if not success:
@@ -169,6 +165,15 @@ def generate_frames():
 
                 elapsed = int(time.time() - session_start)
 
+                current_time = time.time()
+
+                delta = current_time - prev_time
+
+                if delta > 0:
+                    latest_prediction["fps"] = int(1 / delta)
+
+                prev_time = current_time
+
                 if elapsed != last_saved_second:
 
                     last_saved_second = elapsed
@@ -177,12 +182,14 @@ def generate_frames():
 
                     emotion_history.append({
                         "time": timestamp,
-                        "emotion": smoothed_emotion
+                        "emotion": smoothed_emotion,
+                        "confidence": int(confidence * 100),
+                        "faces": len(results.detections),
+                        "fps": latest_prediction["fps"],
                     })
 
                 if confidence < 0.50:
                     latest_prediction["emotion"] = "Analyzing..."
-                    latest_prediction["confidence"] = 0
                     label = "Analyzing..."
                 else:
                     latest_prediction["emotion"] = smoothed_emotion
@@ -208,15 +215,6 @@ def generate_frames():
             b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
         )
-
-        current_time = time.time()
-
-        delta = current_time - prev_time
-
-        if delta > 0:
-            latest_prediction["fps"] = int(1 / delta)
-
-        prev_time = current_time
 
     else:
         latest_prediction["faces"] = 0

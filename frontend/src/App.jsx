@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 
 function App() {
+
   const [sessionStarted, setSessionStarted] = useState(false);
 
   return (
@@ -19,6 +20,7 @@ function App() {
       )}
     </>
   );
+
 }
 
 export default App;

@@ -1,6 +1,8 @@
 import { resetSession } from "../services/sessionService";
 import { useState } from "react";
-function ActionBar({ onEndSession }) {
+import { downloadReport } from "../services/reportService";
+
+function ActionBar({ onEndSession, onHistory }) {
 
 const [loading,setLoading]=useState(false);
 
@@ -25,7 +27,8 @@ setLoading(false);
 
       <button
         disabled={loading}
-        >
+        onClick={downloadReport}
+      >
 
         ⬇ Download Report
 
@@ -38,7 +41,13 @@ setLoading(false);
           💾 Save Session
 
         </button>
+        <button
+              className="secondary-btn"
+              onClick={onHistory}
+          >
+              📜 Session History
 
+          </button>
       <button
         disabled={loading}
         className="danger-btn"
