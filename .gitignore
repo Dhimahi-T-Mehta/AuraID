@@ -90,3 +90,16 @@ dist/
 
 .pytest_cache/
 .mypy_cache/
+
+# Generated reports
+backend/reports/
+
+# Generated charts
+backend/assets/charts/
+
+# Generated snapshots
+backend/assets/snapshot.png
+
+# Python cache
+__pycache__/
+*.pyc

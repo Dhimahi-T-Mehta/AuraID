@@ -58,6 +58,8 @@ latest_prediction = {
 
 emotion_history = deque(maxlen=300)
 
+latest_frame = None
+
 session_start = time.time()
 
 last_saved_second = -1
@@ -115,7 +117,8 @@ def generate_frames():
         success, frame = cap.read()
         if not success:
             continue
-
+        global latest_frame
+        latest_frame = frame.copy()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -218,3 +221,6 @@ def generate_frames():
 
     else:
         latest_prediction["faces"] = 0
+
+def get_latest_frame():
+    return latest_frame
