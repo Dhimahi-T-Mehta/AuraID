@@ -23,6 +23,8 @@ def save_snapshot():
 
     frame = get_latest_frame()
 
+    print("Latest frame:", frame is not None)
+
     if frame is None:
         return None
 
@@ -32,5 +34,7 @@ def save_snapshot():
     )
 
     cv2.imwrite(path, frame)
+
+    print("Snapshot saved:", path)
 
     return path

@@ -85,9 +85,12 @@ def report():
         duration,
     )
 
+    snapshot_path = save_snapshot()
+
     filepath = generate_pdf_report(
         statistics,
         history,
+        snapshot_path,
     )
 
     save_session(statistics)

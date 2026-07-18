@@ -25,6 +25,11 @@ GREEN = HexColor("#22C55E")
 ORANGE = HexColor("#F59E0B")
 PURPLE = HexColor("#8B5CF6")
 
+CARD_BG = HexColor("#F8FAFC")
+CARD_BORDER = HexColor("#D7E3F4")
+TEXT = HexColor("#1E293B")
+SUBTEXT = HexColor("#64748B")
+
 # --------------------------------------------------
 # Paths
 # --------------------------------------------------
@@ -180,6 +185,241 @@ def draw_metric_card(
         str(value),
     )
 
+def draw_card(
+    c,
+    x,
+    y,
+    width,
+    height,
+    fill=CARD_BG,
+    border=CARD_BORDER,
+):
+    """
+    Draws a reusable rounded analytics card.
+    """
+
+    c.setFillColor(fill)
+
+    c.setStrokeColor(border)
+
+    c.setLineWidth(1)
+
+    c.roundRect(
+        x,
+        y,
+        width,
+        height,
+        12,
+        fill=1,
+        stroke=1,
+    )
+
+def draw_section_title(
+    c,
+    x,
+    y,
+    title,
+):
+    """
+    Professional section title.
+    """
+
+    c.setFillColor(PRIMARY)
+
+    c.setFont(
+        "Helvetica-Bold",
+        15,
+    )
+
+    c.drawString(
+        x,
+        y,
+        title,
+    )
+
+    c.setStrokeColor(PRIMARY)
+
+    c.setLineWidth(1)
+
+    c.line(
+        x,
+        y - 6,
+        x + 170,
+        y - 6,
+    )
+
+def draw_summary_card(
+    c,
+    summary,
+):
+    draw_card(
+        c,
+        40,
+        640,
+        515,
+        95,
+    )
+
+    draw_section_title(
+        c,
+        55,
+        720,
+        "AI Summary",
+    )
+
+    text = c.beginText()
+
+    text.setTextOrigin(
+        60,
+        690,
+    )
+
+    text.setFillColor(TEXT)
+
+    text.setFont(
+        "Helvetica",
+        11,
+    )
+
+    for line in summary.split(". "):
+
+        text.textLine(
+            line.strip()
+        )
+
+    c.drawText(text)
+
+def draw_chart_card(
+    c,
+    title,
+    image_path,
+    x,
+    y,
+):
+    draw_card(
+        c,
+        x,
+        y,
+        240,
+        260,
+    )
+
+    draw_section_title(
+        c,
+        x + 12,
+        y + 240,
+        title,
+    )
+
+    if os.path.exists(image_path):
+
+        c.drawImage(
+            image_path,
+            x + 15,
+            y + 15,
+            width=210,
+            height=185,
+            preserveAspectRatio=True,
+        )
+
+def draw_snapshot_card(
+    c,
+    snapshot_path,
+):
+    draw_card(
+        c,
+        40,
+        40,
+        240,
+        240,
+    )
+
+    draw_section_title(
+        c,
+        55,
+        260,
+        "Session Snapshot",
+    )
+
+    if snapshot_path and os.path.exists(snapshot_path):
+
+        c.drawImage(
+            snapshot_path,
+            60,
+            60,
+            width=200,
+            height=160,
+            preserveAspectRatio=True,
+            mask="auto",
+        )
+
+def draw_metrics_grid(
+    c,
+    statistics,
+):
+    draw_card(
+        c,
+        300,
+        40,
+        255,
+        240,
+    )
+
+    draw_section_title(
+        c,
+        315,
+        260,
+        "Session Metrics",
+    )
+
+    metrics = [
+
+        ("Duration", statistics["session_duration"]),
+
+        ("Emotion", statistics["dominant_emotion"]),
+
+        ("Confidence", f'{statistics["average_confidence"]}%'),
+
+        ("Max Conf.", f'{statistics["max_confidence"]}%'),
+
+        ("FPS", statistics["average_fps"]),
+
+        ("Faces", statistics["max_faces"]),
+
+        ("Predictions", statistics["total_predictions"]),
+    ]
+
+    y = 225
+
+    for title, value in metrics:
+
+        c.setFillColor(SUBTEXT)
+
+        c.setFont(
+            "Helvetica",
+            10,
+        )
+
+        c.drawString(
+            320,
+            y,
+            title,
+        )
+
+        c.setFillColor(TEXT)
+
+        c.setFont(
+            "Helvetica-Bold",
+            12,
+        )
+
+        c.drawRightString(
+            535,
+            y,
+            str(value),
+        )
+
+        y -= 28
 
 def draw_statistics(c, statistics):
 
@@ -306,7 +546,11 @@ def draw_footer(c):
 # Main Report
 # --------------------------------------------------
 
-def generate_pdf_report(statistics, history):
+def generate_pdf_report(
+    statistics,
+    history,
+    snapshot_path=None,
+):
 
     timestamp = datetime.now().strftime(
         "%Y%m%d_%H%M%S"
@@ -338,25 +582,6 @@ def generate_pdf_report(statistics, history):
 
     summary = generate_ai_summary(statistics)
 
-    details = [
-
-        ["Metric","Value"],
-
-        ["Session Duration",statistics["session_duration"]],
-
-        ["Dominant Emotion",statistics["dominant_emotion"]],
-
-        ["Average Confidence",f'{statistics["average_confidence"]}%'],
-
-        ["Maximum Confidence",f'{statistics["max_confidence"]}%'],
-
-        ["Average FPS",statistics["average_fps"]],
-
-        ["Maximum Faces",statistics["max_faces"]],
-
-        ["Predictions",statistics["total_predictions"]],
-
-    ]
 
     # ---------------- Cover ----------------
 
@@ -455,198 +680,40 @@ def generate_pdf_report(statistics, history):
 
     draw_footer(c)
 
-    #page 2
+    # ---------------- Page 2 ----------------
 
     c.showPage()
 
-    c.setFillColor(PRIMARY)
-
-    c.setFont(
-        "Helvetica-Bold",
-        24,
+    draw_summary_card(
+        c,
+        summary,
     )
 
-    c.drawString(
-        40,
-        800,
-        "Detailed Analytics",
-    )
-
-    c.setFillColor(NAVY)
-
-    c.setFont(
-        "Helvetica",
-        11,
-    )
-
-    c.drawString(
-        40,
-        780,
-        "Generated from AuraID Emotion Intelligence Engine",
-    )
-
-    c.setFillColor(LIGHT)
-
-    c.roundRect(
-        40,
-        640,
-        515,
-        110,
-        12,
-        fill=1,
-        stroke=0,
-    )
-
-    c.setFillColor(NAVY)
-
-    c.setFont(
-        "Helvetica-Bold",
-        16,
-    )
-
-    c.drawString(
-        60,
-        720,
-        "AI Session Summary",
-    )
-
-    text = c.beginText()
-
-    text.setTextOrigin(
-        60,
-        695,
-    )
-
-    text.setFont(
-        "Helvetica",
-        11,
-    )
-
-    for line in summary.split(". "):
-
-        text.textLine(line.strip())
-
-    c.drawText(text)
-
-    c.setFont(
-        "Helvetica-Bold",
-        15,
-    )
-
-    c.drawString(
-        40,
-        610,
+    draw_chart_card(
+        c,
         "Emotion Distribution",
-    )
-
-    c.drawImage(
         distribution_chart,
         40,
-        330,
-        width=220,
-        height=220,
-        preserveAspectRatio=True,
+        320,
     )
 
-    c.setFont(
-        "Helvetica-Bold",
-        15,
-    )
-
-    c.drawString(
-        290,
-        610,
+    draw_chart_card(
+        c,
         "Emotion Timeline",
-    )
-
-    c.drawImage(
         timeline_chart,
-        280,
-        330,
-        width=260,
-        height=220,
-        preserveAspectRatio=True,
-    )
-
-    snapshot_path = os.path.join(
-        BASE_DIR,
-        "assets",
-        "snapshot.png",
-    )
-
-    if os.path.exists(snapshot_path):
-
-        c.setFont(
-            "Helvetica-Bold",
-            15,
-        )
-
-        c.drawString(
-            40,
-            300,
-            "Session Snapshot",
-        )
-
-        c.drawImage(
-            snapshot_path,
-            40,
-            70,
-            width=220,
-            height=165,
-            preserveAspectRatio=True,
-            mask="auto",
-        )
-
-        c.setFont(
-        "Helvetica-Bold",
-        15,
-    )
-
-    c.drawString(
         300,
-        300,
-        "Session Metrics",
+        320,
     )
 
-    metrics = [
+    draw_snapshot_card(
+        c,
+        snapshot_path,
+    )
 
-        ("Duration", statistics["session_duration"]),
-
-        ("Emotion", statistics["dominant_emotion"]),
-
-        ("Confidence", f'{statistics["average_confidence"]}%'),
-
-        ("Max Confidence", f'{statistics["max_confidence"]}%'),
-
-        ("FPS", statistics["average_fps"]),
-
-        ("Faces", statistics["max_faces"]),
-
-        ("Predictions", statistics["total_predictions"]),
-
-    ]
-
-    y = 270
-
-    for title, value in metrics:
-
-        c.setFillColor(PRIMARY)
-
-        c.drawString(
-            300,
-            y,
-            title,
-        )
-
-        c.setFillColor(NAVY)
-
-        c.drawRightString(
-            530,
-            y,
-            str(value),
-        )
-
-        y -= 28
+    draw_metrics_grid(
+        c,
+        statistics,
+    )
 
     draw_footer(c)
 
