@@ -12,8 +12,15 @@ from services.emotion_detector import (
 from services.statistics import generate_statistics
 from services.report_generator import generate_pdf_report
 from services.database import initialize_database
-from services.session_repository import save_session
-from services.session_repository import get_all_sessions
+from services.session_repository import (
+    save_session,
+    get_all_sessions,
+    get_session_by_id,
+    search_sessions,
+    delete_session,
+    delete_all_sessions,
+    compare_sessions,
+)
 from services.snapshot import save_snapshot
 from services.chart_generator import (
     generate_pie_chart,
@@ -62,7 +69,7 @@ def statistics():
         duration,
     )
 
-    statistics["duration"] = statistics["session_duration"]
+    stats["duration"] = stats["session_duration"]
 
     return jsonify(stats)
 
@@ -104,6 +111,132 @@ def report():
 def sessions():
 
     return jsonify(get_all_sessions())
+
+@app.route("/sessions/search")
+
+def search():
+
+    emotion = request.args.get("emotion")
+
+    date = request.args.get("date")
+
+    confidence = request.args.get("confidence")
+
+    duration = request.args.get("duration")
+
+    sort = request.args.get("sort")
+
+    order = request.args.get("order", "DESC")
+
+    sessions = search_sessions(
+
+        emotion=emotion,
+
+        date=date,
+
+        min_confidence=float(confidence)
+
+        if confidence else None,
+
+        min_duration=int(duration)
+
+        if duration else None,
+
+        sort_by=sort,
+
+        order=order,
+
+    )
+
+    return jsonify(sessions)
+
+@app.route("/sessions/<int:session_id>")
+def get_session(session_id):
+
+    session = get_session_by_id(session_id)
+
+    if session is None:
+
+        return jsonify({
+            "status": "error",
+            "message": "Session not found"
+        }), 404
+
+    return jsonify(session)
+
+@app.route(
+    "/sessions/<int:session_id>",
+    methods=["DELETE"],
+)
+def remove_session(session_id):
+
+    deleted = delete_session(session_id)
+
+    if not deleted:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message": "Session not found",
+
+        }), 404
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Session deleted",
+
+    })
+
+@app.route(
+    "/sessions",
+    methods=["DELETE"],
+)
+def remove_all_sessions():
+
+    deleted = delete_all_sessions()
+
+    return jsonify({
+
+        "status": "success",
+
+        "deleted": deleted,
+
+    })
+
+@app.route(
+    "/sessions/compare",
+    methods=["POST"],
+)
+def compare():
+
+    data = request.get_json()
+
+    first = data.get("session_1")
+
+    second = data.get("session_2")
+
+    result = compare_sessions(
+
+        first,
+
+        second,
+
+    )
+
+    if result is None:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message": "Session not found",
+
+        }), 404
+
+    return jsonify(result)
 
 @app.route("/snapshot")
 def snapshot():
