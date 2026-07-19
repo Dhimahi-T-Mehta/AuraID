@@ -3,13 +3,10 @@ import { useEffect, useState } from "react";
 import "../styles/sessionHistory.css";
 
 import {
-
     fetchSessions,
-
     searchSessions,
-
     deleteSession,
-
+    deleteAllSessions,
 } from "../services/sessionService";
 
 import {
@@ -17,6 +14,7 @@ import {
     compareSessions,
 
 } from "../services/sessionService";
+import ConfirmationModal from "./ConfirmationModal";
 
 function SessionHistoryModal({
 
@@ -43,6 +41,12 @@ function SessionHistoryModal({
     const [order,setOrder]=useState("DESC");
 
     const [selectedSessions, setSelectedSessions] = useState([]);
+
+    const [confirmOpen,setConfirmOpen]=useState(false);
+
+    const [confirmType,setConfirmType]=useState("");
+
+    const [loading,setLoading]=useState(false);
 
     useEffect(() => {
 
@@ -178,6 +182,61 @@ function SessionHistoryModal({
 
     }
 
+    async function handleDeleteSelected(){
+
+        setConfirmType("selected");
+
+        setConfirmOpen(true);
+
+    }
+
+    function handleDeleteAll(){
+
+        setConfirmType("all");
+
+        setConfirmOpen(true);
+
+    }
+
+    async function performDelete() {
+
+        try {
+
+            if (confirmType === "all") {
+
+                await deleteAllSessions();
+
+            }
+
+            else if (confirmType === "selected") {
+
+                await Promise.all(
+
+                    selectedSessions.map(id =>
+
+                        deleteSession(id)
+
+                    )
+
+                );
+
+            }
+
+            setSelectedSessions([]);
+
+            setConfirmOpen(false);
+
+            await refreshSessions();
+
+        }
+
+        catch(error){
+
+            console.error(error);
+
+        }
+
+    }
     async function handleCompare() {
 
         if (selectedSessions.length !== 2) {
@@ -217,6 +276,16 @@ function SessionHistoryModal({
             );
 
         }
+
+    }
+
+    async function refreshSessions() {
+
+        setLoading(true);
+
+        await loadSessions();
+
+        setLoading(false);
 
     }
 
@@ -418,25 +487,62 @@ function SessionHistoryModal({
 
                             </select>
 
-                    <button
+                <div className="toolbar-actions">
+                        <button
 
-                        onClick={handleSearch}
+                            onClick={handleSearch}
 
-                    >
+                        >
 
-                        Search
+                            Search
 
-                    </button>
+                        </button>
 
-                    <button
+                        <button
 
-                        onClick={clearFilters}
+                            onClick={clearFilters}
 
-                    >
+                        >
 
-                        Clear
+                            Clear
 
-                    </button>
+                        </button>
+
+                        <button
+
+                        onClick={refreshSessions}
+
+                        >
+
+                        ↻ Refresh
+
+                        </button>
+
+                        <button
+
+                        disabled={selectedSessions.length===0}
+
+                        onClick={handleDeleteSelected}
+
+                        >
+
+                        Delete Selected
+
+                        </button>
+
+                        <button
+
+                        className="danger"
+
+                        onClick={handleDeleteAll}
+
+                        >
+
+                        Delete All
+
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -486,12 +592,15 @@ function SessionHistoryModal({
 
                 <div className="history-list">
 
-                    {sessions.length === 0 ? (
+                    {loading ? (
 
-                        <p>No sessions found.</p>
+                        <div className="loading-history">
+
+                            Loading Sessions...
+
+                        </div>
 
                     ) : (
-
                         sessions.map((session) => (
 
                             <div
@@ -614,6 +723,24 @@ function SessionHistoryModal({
                 </div>
 
             </div>
+            <ConfirmationModal
+                open={confirmOpen}
+                title={
+                    confirmType === "all"
+                        ? "Delete All Sessions"
+                        : "Delete Selected Sessions"
+                }
+                message={
+                    confirmType === "all"
+                        ? "All stored sessions will be permanently deleted."
+                        : `Delete ${selectedSessions.length} selected sessions?`
+                }
+                danger
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={performDelete}
+                onCancel={() => setConfirmOpen(false)}
+            />
 
         </div>
 
